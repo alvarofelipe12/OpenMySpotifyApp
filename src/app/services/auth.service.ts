@@ -1,28 +1,66 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ScopesBuilder } from '../utils/scope-builder';
+import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthService {
+
     private requestAuthUrl = 'https://accounts.spotify.com/authorize';
+
     private authorized$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-    private authConfig = {
-        client_id: 'd19fb7ab5cc04272b21de97a8486aae0',  // WebPortal App Id. Shoud be config
-        response_type: 'token',
-        redirect_uri: 'http://localhost:4200/assets/callback.html',  // My URL
-        state: '',
-        show_dialog: true,
-        scope: new ScopesBuilder().build()
+    private callbackSource: BehaviorSubject<void>;
+
+    public callback$: Observable<void>;
+
+    private authConfig: {
+        client_id: string,  // WebPortal App Id. Shoud be config
+        response_type: string,
+        redirect_uri: string,  // My URL
+        state: string,
+        show_dialog: boolean,
+        scope: string[]
     };
 
-    public authorize() {
-        window.location.href = this.buildAuthUrl();
+    private browser: InAppBrowserObject;
+
+    constructor(
+        private iab: InAppBrowser
+    ) {
+        this.callbackSource = new BehaviorSubject(null);
+        this.callback$ = this.callbackSource.asObservable();
     }
 
-    // Signal someone, that router can navigate somewhere
+    /**
+     * Navigates to the auth page
+     */
+    public authorize() {
+        this.browser = this.iab.create(this.buildAuthUrl());
+        // The loadstart event runs everytime is loaded a page in the inappbrowser
+        this.browser.on('loadstart').subscribe((event: any) => {
+            // Check for the callback
+            if ((event.url).startsWith('http://localhost/callback')) {
+                const hash = event.url;
+
+                if (hash.substring(1).indexOf('error') !== -1) {
+                    // login failure
+                    this.browser.close();
+                } else if (hash) {
+                    // login success
+                    const token = hash.split('&')[0].split('=')[1];
+                    localStorage.setItem('spotify-token', token);
+                    this.callbackSource.next();
+                    this.browser.close();
+                }
+            }
+        });
+    }
+
+    /**
+     * Signal someone, that router can navigate somewhere
+     */
     public authorized(): void {
         console.log('Called auth');
         this.authorized$.next(true);

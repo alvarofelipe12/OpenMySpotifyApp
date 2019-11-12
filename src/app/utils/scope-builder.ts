@@ -59,7 +59,7 @@ export class ScopesBuilder {
         return this;
     }
 
-    public build(): string {
+    public build(): string[] {
 
         const buffer: string[] = [];
 
@@ -72,6 +72,6 @@ export class ScopesBuilder {
             }
         });
 
-        return buffer.join(' ');
+        return buffer;
     }
 }
