@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ScopesBuilder } from 'src/app/utils/scope-builder';
 import { User } from 'src/app/entities/user.entity';
 import { UserService } from 'src/app/services/user.service';
@@ -6,6 +6,7 @@ import { PlaylistsService } from 'src/app/services/playlists.service';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-home',
@@ -33,7 +34,8 @@ export class HomePage implements OnInit, OnDestroy {
         private userService: UserService,
         private playlistsService: PlaylistsService,
         private router: Router,
-        private auth: AuthService
+        private auth: AuthService,
+        private changeRef: ChangeDetectorRef
     ) {
         this.isLogged = false;
     }
@@ -64,18 +66,24 @@ export class HomePage implements OnInit, OnDestroy {
      * get the detail's user profile from spotify
      */
     private getUserProfile() {
-        this.userService.getUserProfile().subscribe((respUserProfile: User) => {
-            this.userData = respUserProfile;
-        });
+        this.userService.getUserProfile().pipe(finalize(() => {
+            this.changeRef.detectChanges();
+        }))
+            .subscribe((respUserProfile: User) => {
+                this.userData = respUserProfile;
+            });
     }
 
     /**
      * get all the playlists from the user
      */
     private getPlaylists() {
-        this.playlistsService.getPlaylists().subscribe((resp: { items: any[] }) => {
-            this.playlists = resp.items;
-        });
+        this.playlistsService.getPlaylists().pipe(finalize(() => {
+            this.changeRef.detectChanges();
+        }))
+            .subscribe((resp: { items: any[] }) => {
+                this.playlists = resp.items;
+            });
     }
 
     /**
@@ -102,5 +110,4 @@ export class HomePage implements OnInit, OnDestroy {
         this.auth.configure(ac).authorize();
         this.isLogged = true;
     }
-
 }

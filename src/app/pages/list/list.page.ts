@@ -1,39 +1,84 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PlaylistsService } from 'src/app/services/playlists.service';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { finalize } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: 'list.page.html',
-  styleUrls: ['list.page.scss']
+    selector: 'app-list',
+    templateUrl: 'list.page.html',
+    styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  private selectedItem: any;
-  private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
-  ];
-  public items: Array<{ title: string; note: string; icon: string }> = [];
-  constructor() {
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
-  }
 
-  ngOnInit() {
-  }
-  // add back when alpha.4 is out
-  // navigate(item) {
-  //   this.router.navigate(['/list', JSON.stringify(item)]);
-  // }
+    /**
+     * Stores all the playlist data
+     */
+    public playlistData: any;
+
+    /**
+     * Store the id's playlist
+     */
+    private idPlaylist: string;
+
+    /**
+     * Status of player
+     */
+    public playing: boolean;
+
+    /**
+     * Store's media object played
+     */
+    public currentTrack: MediaObject;
+
+    constructor(
+        private playlistsService: PlaylistsService,
+        private route: ActivatedRoute,
+        private media: Media,
+        private changeRef: ChangeDetectorRef
+    ) {
+    }
+
+    ngOnInit() {
+        this.idPlaylist = this.route.snapshot.paramMap.get('id');
+        this.getPlaylistDetail();
+    }
+
+    /**
+     * get the details of the playlist selected
+     */
+    private getPlaylistDetail() {
+        this.playlistsService.getPlaylistDetail(this.idPlaylist).pipe(finalize(() => {
+            this.changeRef.detectChanges();
+        }))
+            .subscribe(resp => {
+                this.playlistData = resp;
+            });
+    }
+
+    /**
+     * Plays a preview song
+     * @param item song selected
+     */
+    play(item: string): void {
+        this.playing = true;
+        this.currentTrack = this.media.create(item);
+        this.currentTrack.onSuccess.subscribe(() => {
+            this.playing = false;
+        });
+        this.currentTrack.onError.subscribe(() => {
+            this.playing = false;
+        });
+        this.currentTrack.play();
+    }
+
+    /**
+     * Stop the played file
+     */
+    stop() {
+        if (this.currentTrack) {
+            this.currentTrack.stop();
+            this.playing = false;
+        }
+    }
 }

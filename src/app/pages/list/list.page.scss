@@ -1,1 +1,19 @@
+ion-item {
+    --border-color: transparent;
+}
 
+ion-col {
+    text-align: center;
+}
+
+.welcome-card {
+    ion-avatar {
+        text-align: center;
+        margin: 0 0% 0 40%;
+    }
+}
+
+app-header {
+    position: relative;
+    left: 15%;
+}

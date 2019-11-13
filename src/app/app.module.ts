@@ -15,6 +15,7 @@ import { PlaylistsService } from './services/playlists.service';
 import { AuthService } from './services/auth.service';
 import { TracksService } from './services/tracks.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Media } from '@ionic-native/media/ngx';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
         StatusBar,
         SplashScreen,
         InAppBrowser,
+        Media,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         UserService,
         PlaylistsService,
