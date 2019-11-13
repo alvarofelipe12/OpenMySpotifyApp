@@ -8,9 +8,22 @@ import { finalize } from 'rxjs/operators';
     styleUrls: ['./search.page.scss'],
 })
 export class SearchPage implements OnInit {
-    tracks: any[];
-    loading: boolean;
-    landingMessage: boolean;
+
+    /**
+     * Stores tracks
+     */
+    public tracks: any[];
+
+    /**
+     * status to Show a loader or not
+     */
+    public loading: boolean;
+
+    /**
+     * Status to show a landing messsage or not
+     */
+    public landingMessage: boolean;
+
     constructor(
         private tracksService: TracksService
     ) {
@@ -20,7 +33,12 @@ export class SearchPage implements OnInit {
     ngOnInit() {
     }
 
-    buscar(term: string) {
+    /**
+     * Let the user search a song, but if its empty it shows
+     * the landing message
+     * @param term string to search as a song
+     */
+    public search(term: string) {
         if (term !== '') {
             this.loading = true;
             this.landingMessage = false;

@@ -11,7 +11,8 @@
     <div>
         <!-- <input #termino type="text" (keyup)="buscar(termino.value)" class="form-control"
                 placeholder="Buscar artista..."> -->
-        <ion-searchbar animated (ionInput)="buscar($event.target.value)" placeholder="Type a title's song"></ion-searchbar>
+        <ion-searchbar animated (ionInput)="search($event.target.value)" placeholder="Type a song's title">
+        </ion-searchbar>
     </div>
     <ion-item *ngIf="landingMessage">
         <ion-label class="ion-text-center">
