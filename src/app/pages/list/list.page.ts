@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlaylistsService } from 'src/app/services/playlists.service';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -21,20 +20,9 @@ export class ListPage implements OnInit {
      */
     private idPlaylist: string;
 
-    /**
-     * Status of player
-     */
-    public playing: boolean;
-
-    /**
-     * Store's media object played
-     */
-    public currentTrack: MediaObject;
-
     constructor(
         private playlistsService: PlaylistsService,
         private route: ActivatedRoute,
-        private media: Media,
         private changeRef: ChangeDetectorRef
     ) {
     }
@@ -54,31 +42,5 @@ export class ListPage implements OnInit {
             .subscribe(resp => {
                 this.playlistData = resp;
             });
-    }
-
-    /**
-     * Plays a preview song
-     * @param item song selected
-     */
-    play(item: string): void {
-        this.playing = true;
-        this.currentTrack = this.media.create(item);
-        this.currentTrack.onSuccess.subscribe(() => {
-            this.playing = false;
-        });
-        this.currentTrack.onError.subscribe(() => {
-            this.playing = false;
-        });
-        this.currentTrack.play();
-    }
-
-    /**
-     * Stop the played file
-     */
-    stop() {
-        if (this.currentTrack) {
-            this.currentTrack.stop();
-            this.playing = false;
-        }
     }
 }

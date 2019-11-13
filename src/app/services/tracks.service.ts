@@ -14,4 +14,9 @@ export class TracksService {
         const url = 'https://api.spotify.com/v1/tracks/' + id;
         return this.http.get(url);
     }
+
+    public searchTrack(keyword: string) {
+        const url = 'https://api.spotify.com/v1/search?q=' + keyword + '&type=track';
+        return this.http.get(url);
+    }
 }

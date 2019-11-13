@@ -14,6 +14,10 @@ const routes: Routes = [
     {
         path: 'playlist-detail/:id',
         loadChildren: () => import('./pages/list/list.module').then(m => m.ListPageModule)
+    },
+    {
+        path: 'search',
+        loadChildren: () => import('./pages/search/search.module').then(m => m.SearchPageModule)
     }
 ];
 

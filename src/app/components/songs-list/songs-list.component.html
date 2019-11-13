@@ -1,0 +1,32 @@
+<ion-list>
+    <ion-card *ngFor="let songData of tracksProccessed">
+        <ion-item>
+            <ion-avatar slot="start">
+                <img [src]="songData.album.images[0].url" alt="album">
+            </ion-avatar>
+            <div>
+                <ion-card-header>
+                    <h2>{{ songData.name }}</h2>
+                </ion-card-header>
+                <ion-card-content>
+                    <p>{{ songData.artists[0].name}}</p>
+                </ion-card-content>
+            </div>
+        </ion-item>
+
+        <ion-row>
+            <ion-col *ngIf="songData.preview_url && !playing">
+                <ion-button (click)="play(songData.preview_url)" size="small" color="medium">
+                    <ion-icon slot="start" name="play"></ion-icon>
+                    Play preview
+                </ion-button>
+            </ion-col>
+            <ion-col *ngIf="songData.preview_url && playing">
+                <ion-button (click)="stop()" size="small" color="medium">
+                    <ion-icon slot="start" name="close"></ion-icon>
+                    Stop
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-card>
+</ion-list>

@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="home"></ion-back-button>
+            <app-header></app-header>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div>
+        <!-- <input #termino type="text" (keyup)="buscar(termino.value)" class="form-control"
+                placeholder="Buscar artista..."> -->
+        <ion-searchbar animated (ionInput)="buscar($event.target.value)" placeholder="Type a title's song"></ion-searchbar>
+    </div>
+    <ion-item *ngIf="landingMessage">
+        <ion-label class="ion-text-center">
+            <img src="./../../../assets/search.png" alt="search">
+            <p>Welcome to search</p>
+            <h2>Look for your favorite songs</h2>
+        </ion-label>
+    </ion-item>
+    <div *ngIf="loading" class="loading">
+        <ion-spinner name="circles"></ion-spinner>
+        <p>Searching song</p>
+    </div>
+    <app-songs-list *ngIf="!loading && !landingMessage" [tracks]="tracks"></app-songs-list>
+
+    <!-- <app-tarjetas *ngIf="!loading" [items]="artistas"></app-tarjetas> -->
+</ion-content>

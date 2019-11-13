@@ -26,36 +26,5 @@
             </p>
         </ion-card-content>
     </ion-card>
-    <ion-list *ngIf="playlistData">
-        <ion-card *ngFor="let songData of playlistData.tracks.items">
-            <ion-item>
-                <ion-avatar slot="start">
-                    <img [src]="songData.track.album.images[0].url" alt="album">
-                </ion-avatar>
-                <div>
-                    <ion-card-header>
-                        <h2>{{ songData.track.name }}</h2>
-                    </ion-card-header>
-                    <ion-card-content>
-                        <p>{{ songData.track.artists[0].name}}</p>
-                    </ion-card-content>
-                </div>
-            </ion-item>
-
-            <ion-row>
-                <ion-col *ngIf="songData.track.preview_url && !playing">
-                    <ion-button (click)="play(songData.track.preview_url)" size="small" color="medium">
-                        <ion-icon slot="start" name="play"></ion-icon>
-                        Play preview
-                    </ion-button>
-                </ion-col>
-                <ion-col *ngIf="songData.track.preview_url && playing">
-                    <ion-button (click)="stop()" size="small" color="medium">
-                        <ion-icon slot="start" name="close"></ion-icon>
-                        Stop
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-        </ion-card>
-    </ion-list>
+    <app-songs-list *ngIf="playlistData" [tracks]="playlistData.tracks"></app-songs-list>
 </ion-content>

@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { HeaderComponent } from './header/header.component';
+import { SongsListComponent } from './songs-list/songs-list.component';
 
 @NgModule({
     declarations: [
-        HeaderComponent
+        HeaderComponent,
+        SongsListComponent
     ],
     imports: [
         CommonModule,
@@ -13,6 +15,7 @@ import { HeaderComponent } from './header/header.component';
     ],
     exports: [
         HeaderComponent,
+        SongsListComponent
     ],
     entryComponents: [
     ]
